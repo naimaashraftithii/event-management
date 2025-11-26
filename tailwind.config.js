@@ -1,14 +1,13 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    "./src/app/**/*.{js,jsx,ts,tsx,mdx}",
-    "./src/components/**/*.{js,jsx,ts,tsx,mdx}",
+    "./src/app/**/*.{js,jsx,ts,tsx}",
+    "./src/components/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
     extend: {},
   },
-  plugins: [require("daisyui")],
-  daisyui: {
-    themes: ["light", "dark", "cupcake"], // চাইলে শুধু ["light"] রাখো
-  },
+  plugins: [
+    require("daisyui"), // only if you actually installed daisyui; otherwise remove this line
+  ],
 };
