@@ -9,7 +9,7 @@ import SpeakersSection from "@/components/SpeakersSection";
 import { db } from "@/lib/firebase";
 import { collection, getDocs, query, limit } from "firebase/firestore";
 
-// --- GALLERY DATA (home preview only) ---
+// --- GALLERY DATA  ---
 const galleryItems = [
   {
     id: "g1",
@@ -82,7 +82,7 @@ export default function HomePage() {
   const goNextGallery = () =>
     setGalleryIndex((prev) => (prev + 1) % gallerySlides.length);
 
-  // Fetch 6 products from Firestore for “Our Events”
+  // Fetch 6 products 
   useEffect(() => {
     async function load() {
       try {
@@ -104,13 +104,13 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen bg-[#050816] text-white pt-16">
-      {/* HERO SLIDER */}
+      {/* HERO-SLIDER */}
       <HeroSlider />
 
       {/* OUR EVENTS SECTION (from DB) */}
       <section className="max-w-6xl mx-auto px-4 md:px-6 py-16">
         <div className="grid gap-10 md:grid-cols-[1.2fr,2fr] items-start">
-          {/* LEFT SIDE TEXT */}
+          {/* LEFT  */}
           <div>
             <p className="text-xs tracking-[0.25em] uppercase text-[#ff9f1a]">
               Our Events
@@ -172,7 +172,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* HOME GALLERY PREVIEW (CAROUSEL) */}
+      {/* GALLERY ) */}
       <section className="bg-[#050816] border-t border-white/5 py-16">
         <div className="max-w-6xl mx-auto px-4 md:px-6">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
@@ -190,7 +190,7 @@ export default function HomePage() {
               </p>
             </div>
 
-            {/* connects to /gallery page */}
+            {/* button */}
             <Link
               href="/gallery"
               className="inline-flex items-center rounded-full bg-gradient-to-r from-[#ff6a00] via-[#ff9f1a] to-[#ffd34d]
@@ -202,7 +202,7 @@ export default function HomePage() {
             </Link>
           </div>
 
-          {/* Carousel wrapper */}
+          {/* Carousel  */}
           <div className="relative max-w-5xl mx-auto">
             <div className="overflow-hidden rounded-3xl border border-white/10 bg-black/30">
               <div
@@ -249,7 +249,7 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Nav arrows */}
+        
             <button
               onClick={goPrevGallery}
               className="absolute left-2 top-1/2 -translate-y-1/2 hidden md:flex w-9 h-9 rounded-full
@@ -269,7 +269,6 @@ export default function HomePage() {
               <ChevronRight size={18} />
             </button>
 
-            {/* Dots */}
             <div className="mt-4 flex justify-center gap-2">
               {gallerySlides.map((_, i) => (
                 <button
@@ -288,7 +287,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* OUR SERVICES SECTION */}
+      {/* OUR SERVICES */}
 <section className="bg-[#f5f5f5] py-16">
   <div className="max-w-6xl mx-auto px-4 md:px-6 text-center">
     <p className="text-xs tracking-[0.25em] uppercase text-[#ff6a00]">
@@ -386,7 +385,7 @@ export default function HomePage() {
     </div>
   </div>
 </section>
- {/* NEW: Professional Speakers section */}
+ {/*Professional Speakers section */}
       <SpeakersSection />
     </main>
   );

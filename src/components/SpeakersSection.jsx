@@ -46,11 +46,11 @@ export default function SpeakersSection() {
   const [activeIndex, setActiveIndex] = useState(0);
   const active = speakers[activeIndex];
 
-  // 🔁 Auto-rotate speakers (carousel autoplay on load)
+
   useEffect(() => {
     const intervalId = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % speakers.length);
-    }, 5000); // 5s per slide
+    }, 5000); 
 
     return () => clearInterval(intervalId);
   }, []);
@@ -63,9 +63,29 @@ export default function SpeakersSection() {
 
   return (
     <section className="bg-[#f9fafb]">
-      {/* TOP PART: city fog + speaker */}
+      {/* TOP   */}
+      <div className="bg-gradient-to-r from-[#ff6a00] via-[#ff9f1a] to-[#ffd34d] py-10">
+        <div className="max-w-4xl mx-auto px-4 text-center text-white">
+          <p className="text-xs tracking-[0.25em] uppercase">
+            Are You Ready?
+          </p>
+          <h3 className="mt-2 text-xl md:text-2xl font-semibold">
+            Are You Ready To Make Your Own Special Events?
+          </h3>
+          <p className="mt-2 text-xs md:text-sm text-white/90">
+            Get started now – our team will help you plan, design and manage
+            your next event from concept to curtain call.
+          </p>
+
+          <button className="mt-5 inline-flex items-center rounded-full bg-white px-7 py-2.5 text-xs font-semibold text-[#ff6a00] shadow-md shadow-black/20 hover:bg-[#fff5e6] transition">
+            BOOK A FREE CONSULTATION
+          </button>
+        </div>
+      </div>
+
+      {/*BOTTOM  PART*/}
       <div className="relative overflow-hidden">
-        {/* background city / fog effect */}
+        {/* background  */}
         <div
           className="absolute inset-0 bg-cover bg-center opacity-40"
           style={{
@@ -76,11 +96,11 @@ export default function SpeakersSection() {
         <div className="absolute inset-0 bg-white/70" />
 
         <div className="relative max-w-6xl mx-auto px-4 md:px-6 py-16 md:py-20 flex flex-col md:flex-row items-center gap-10">
-          {/* Left: big speaker photo */}
+          {/* Left */}
           <div className="w-full md:w-[38%] flex justify-center">
             <div className="relative overflow-hidden rounded-[3rem] shadow-xl shadow-black/15 bg-white">
               <img
-                key={active.id} // helps React transition nicely when slide changes
+                key={active.id} 
                 src={active.imageUrl}
                 alt={active.name}
                 className="h-[360px] w-auto object-cover md:h-[420px] transform transition duration-500 ease-out hover:scale-105 hover:opacity-95"
@@ -88,7 +108,7 @@ export default function SpeakersSection() {
             </div>
           </div>
 
-          {/* Right: text content */}
+          {/* Right*/}
           <div className="w-full md:w-[62%] text-center md:text-left transition-opacity duration-500 ease-out">
             <p className="text-xs tracking-[0.25em] uppercase text-[#9ca3af]">
               Harmoni Staffs
@@ -112,7 +132,7 @@ export default function SpeakersSection() {
               {active.description}
             </p>
 
-            {/* social links with FA icons */}
+            {/* social links */}
             <div className="mt-5 flex justify-center md:justify-start gap-3 text-xs text-[#6b7280]">
               <span className="uppercase tracking-[0.2em] text-[#9ca3af]">
                 Social
@@ -145,7 +165,7 @@ export default function SpeakersSection() {
               </div>
             </div>
 
-            {/* bottom small cards carousel to switch speakers */}
+            {/* bottom small cards c */}
             <div className="mt-8">
               <div className="flex items-center justify-center md:justify-start gap-3">
                 {/* prev arrow */}
@@ -194,7 +214,7 @@ export default function SpeakersSection() {
                 </button>
               </div>
 
-              {/* dots under cards */}
+              {/* dots cards */}
               <div className="mt-4 flex justify-center md:justify-start gap-2">
                 {speakers.map((_, i) => (
                   <button
@@ -214,25 +234,7 @@ export default function SpeakersSection() {
         </div>
       </div>
 
-      {/* BOTTOM CTA STRIP (orange polygon style) */}
-      <div className="bg-gradient-to-r from-[#ff6a00] via-[#ff9f1a] to-[#ffd34d] py-10">
-        <div className="max-w-4xl mx-auto px-4 text-center text-white">
-          <p className="text-xs tracking-[0.25em] uppercase">
-            Are You Ready?
-          </p>
-          <h3 className="mt-2 text-xl md:text-2xl font-semibold">
-            Are You Ready To Make Your Own Special Events?
-          </h3>
-          <p className="mt-2 text-xs md:text-sm text-white/90">
-            Get started now – our team will help you plan, design and manage
-            your next event from concept to curtain call.
-          </p>
-
-          <button className="mt-5 inline-flex items-center rounded-full bg-white px-7 py-2.5 text-xs font-semibold text-[#ff6a00] shadow-md shadow-black/20 hover:bg-[#fff5e6] transition">
-            BOOK A FREE CONSULTATION
-          </button>
-        </div>
-      </div>
+      
     </section>
   );
 }

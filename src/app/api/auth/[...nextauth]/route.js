@@ -12,22 +12,27 @@ export const authOptions = {
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
+        email: {},
+        password: {},
       },
       async authorize(credentials) {
-        if (!credentials.email) return null;
-
-        return {
-          id: "demo-user",
-          name: credentials.email.split("@")[0],
-          email: credentials.email,
-        };
+        // Simple credentials login (demo only)
+        if (
+          credentials.email === "demo@gmail.com" &&
+          credentials.password === "123456"
+        ) {
+          return { id: "1", name: "Demo User", email: "demo@gmail.com" };
+        }
+        return null;
       },
     }),
   ],
-  pages: { signIn: "/login" },
-  session: { strategy: "jwt" },
+
+  pages: {
+    signIn: "/login",
+  },
+
+  secret: process.env.NEXTAUTH_SECRET,
 };
 
 const handler = NextAuth(authOptions);

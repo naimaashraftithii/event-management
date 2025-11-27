@@ -53,8 +53,7 @@ export default function ProductsPage() {
             Choose The Perfect Event Package
           </h1>
           <p className="mt-2 text-sm text-[#b3b3b3] max-w-2xl">
-            Wedding, birthday, corporate বা family gathering – আপনার ইভেন্টের জন্য
-            curated decoration packages এক জায়গায়।
+            Wedding, birthday, corporate or family gathering – curated decoration packages for your event in one place.
           </p>
         </header>
 
