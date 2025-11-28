@@ -5,18 +5,19 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import toast, { Toaster } from "react-hot-toast";
-import Swal from "sweetalert2";
+import { Toaster } from "react-hot-toast";
+import LoadingLottie from "@/components/LoadingLottie";
+import ErrorLottie from "@/components/ErrorLottie";
 
 import { db } from "@/lib/firebase";
 import {
   doc,
   getDoc,
-  addDoc,
   collection,
+  addDoc,
   serverTimestamp,
 } from "firebase/firestore";
-import LoadingLottie from "@/components/LoadingLottie";
+import Swal from "sweetalert2";
 
 export default function ProductDetailsPage() {
   const { id } = useParams();
@@ -25,78 +26,123 @@ export default function ProductDetailsPage() {
 
   const [item, setItem] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [errorMsg, setErrorMsg] = useState("");
   const [bookingLoading, setBookingLoading] = useState(false);
 
-  //  guard
+  // Load single product from Firestore
   useEffect(() => {
-    if (status === "loading") return;
-    if (!session) {
-      router.replace("/login");
-    }
-  }, [status, session, router]);
-
-
-  useEffect(() => {
-    if (!id || !session) return;
+    if (!id) return;
 
     async function loadProduct() {
       try {
-        const docRef = doc(db, "products", id);
-        const snap = await getDoc(docRef);
+        setErrorMsg("");
+        const ref = doc(db, "products", id);
+        const snap = await getDoc(ref);
+
         if (!snap.exists()) {
-          toast.error("Package not found");
-          router.replace("/products");
+          setItem(null);
+          setErrorMsg("Package not found or removed.");
           return;
         }
+
         setItem({ id: snap.id, ...snap.data() });
       } catch (err) {
         console.error("Failed to load product:", err);
-        toast.error("Failed to load package");
-        router.replace("/products");
+        setErrorMsg("Failed to load package");
       } finally {
         setLoading(false);
       }
     }
 
     loadProduct();
-  }, [id, session, router]);
+  }, [id]);
 
+  const handleBooking = async () => {
+    if (!item) return;
 
-  if (status === "loading" || (!session && status !== "loading")) {
-    return (
-      <section className="min-h-screen bg-[#050816] pt-28 flex items-center justify-center">
-        <Toaster />
-        <LoadingLottie
-          message="Preparing your package details..."
-          fullscreen={false}
-        />
-      </section>
-    );
-  }
+    // wait if auth loading
+    if (status === "loading") return;
 
+    if (!session) {
+      const result = await Swal.fire({
+        title: "Login required",
+        text: "Please login or register to book this package.",
+        icon: "info",
+        showCancelButton: true,
+        confirmButtonColor: "#f97316",
+        cancelButtonColor: "#6b7280",
+        confirmButtonText: "Go to Login",
+        cancelButtonText: "Cancel",
+      });
+
+      if (result.isConfirmed) {
+        router.push("/login");
+      }
+      return;
+    }
+
+    try {
+      setBookingLoading(true);
+
+      await addDoc(collection(db, "bookings"), {
+        productId: item.id,
+        title: item.title,
+        imageUrl: item.imageUrl || "",
+        category: item.category || "",
+        price: item.price || "",
+        currency: item.currency || "BDT",
+        userEmail: session.user.email,
+        userName: session.user.name || "",
+        status: "pending",
+        createdAt: serverTimestamp(),
+      });
+
+      await Swal.fire({
+        icon: "success",
+        title: "Booking created!",
+        text: "You can see it in the 'My Bookings' page.",
+        confirmButtonColor: "#22c55e",
+      });
+
+      router.push("/booking");
+    } catch (err) {
+      console.error("Booking error:", err);
+      await Swal.fire({
+        icon: "error",
+        title: "Booking failed",
+        text: "Something went wrong. Please try again.",
+        confirmButtonColor: "#f97316",
+      });
+    } finally {
+      setBookingLoading(false);
+    }
+  };
+
+  // Loading state
   if (loading) {
     return (
-      <section className="min-h-screen bg-[#050816] pt-28 flex items-center justify-center">
+      <section className="min-h-screen bg-[#050816] pt-24 pb-16 flex items-center justify-center">
         <Toaster />
-        <p className="text-sm text-[#b3b3b3]">Loading package...</p>
+        <LoadingLottie message="Loading package..." fullscreen={false} />
       </section>
     );
   }
 
-  if (!item) {
+  // Error state
+  if (errorMsg && !item) {
     return (
-      <section className="min-h-screen bg-[#050816] pt-28 flex items-center justify-center">
+      <section className="min-h-screen bg-[#050816] pt-24 pb-16 flex items-center justify-center">
         <Toaster />
-        <div className="text-center">
-          <p className="text-sm text-[#b3b3b3] mb-4">
-            Package not found or removed.
-          </p>
-          <Link
-            href="/products"
-            className="inline-flex items-center gap-2 rounded-full border border-white/10 px-4 py-2 text-xs font-medium text-[#dadada] hover:border-[#ff9f1a] hover:text-[#ff9f1a] transition"
-          >
-            ← Back to all packages
-          </Link>
+        <div className="max-w-md w-full">
+          <ErrorLottie message={errorMsg} fullscreen={false} />
+          <div className="mt-6 text-center">
+            <Link
+              href="/products"
+              className="inline-flex items-center gap-2 rounded-full border border-white/10 px-4 py-2 text-xs font-medium text-[#dadada] hover:border-[#ff9f1a] hover:text-[#ff9f1a] transition"
+            >
+              ← Back to all packages
+            </Link>
+          </div>
         </div>
       </section>
     );
@@ -107,62 +153,11 @@ export default function ProductDetailsPage() {
       ? item.price.toLocaleString()
       : item.price || "-";
 
-  //  Book Now 
-  const handleBooking = async () => {
-    if (!session) {
-      await Swal.fire({
-        icon: "info",
-        title: "Login required",
-        text: "Please login to book this package.",
-        confirmButtonText: "Go to Login",
-      });
-      router.push("/login");
-      return;
-    }
-
-    try {
-      setBookingLoading(true);
-
-      const payload = {
-        productId: item.id,
-        title: item.title,
-        imageUrl: item.imageUrl || "",
-        category: item.category || "",
-        price: item.price || 0,
-        currency: item.currency || "BDT",
-        userEmail: session.user.email,
-        userName: session.user.name || "",
-        status: "pending",
-        createdAt: serverTimestamp(),
-      };
-
-      await addDoc(collection(db, "bookings"), payload);
-
-      await Swal.fire({
-        icon: "success",
-        title: "Booking created!",
-        text: "You can see it in 'My Bookings' page.",
-        confirmButtonText: "Go to My Bookings",
-      });
-
-      router.push("/booking");
-    } catch (err) {
-      console.error("Booking error:", err);
-      Swal.fire({
-        icon: "error",
-        title: "Booking failed",
-        text: "Something went wrong. Please try again.",
-      });
-    } finally {
-      setBookingLoading(false);
-    }
-  };
-
   return (
     <>
       <Toaster />
-      <section className="min-h-screen bg-[#050816] pt-24 pb-16">
-        {/* Banner section */}
+      <section className="min-h-screen bg-[#050816] pt-24 pb-16 text-white">
+        {/* Banner */}
         <div className="relative h-[260px] md:h-[340px] w-full overflow-hidden">
           <div
             className="absolute inset-0 bg-cover bg-center"
@@ -187,7 +182,7 @@ export default function ProductDetailsPage() {
           </div>
         </div>
 
-        {/* Main content */}
+        {/* Content */}
         <div className="max-w-5xl mx-auto px-4 mt-8 grid gap-8 md:grid-cols-[2fr,1fr]">
           {/* LEFT */}
           <div>
@@ -199,7 +194,7 @@ export default function ProductDetailsPage() {
             </p>
           </div>
 
-          {/* RIGHT*/}
+          {/* RIGHT */}
           <aside className="rounded-2xl border border-white/10 bg-[#050816] p-5 shadow-lg shadow-black/40">
             <h3 className="text-sm font-semibold text-[#dadada] mb-4">
               Package Info
@@ -254,7 +249,7 @@ export default function ProductDetailsPage() {
           </aside>
         </div>
 
-        {/* Back button */}
+        {/* Back */}
         <div className="max-w-5xl mx-auto px-4 mt-10">
           <Link
             href="/products"

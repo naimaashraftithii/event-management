@@ -229,7 +229,7 @@ export default function GalleryPage() {
         </div>
       </section>
 
-      {/* FILTER TABS + GRID */}
+      {/* FILTER TAB */}
       <section className="max-w-6xl mx-auto px-4 md:px-6 mt-10">
         {/* Tabs */}
         <div className="flex flex-wrap justify-center gap-3 mb-8">

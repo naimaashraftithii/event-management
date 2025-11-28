@@ -4,16 +4,24 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { collection, getDocs, addDoc, serverTimestamp } from "firebase/firestore";
+import { useSession } from "next-auth/react";
+import {
+  collection,
+  getDocs,
+  addDoc,
+  serverTimestamp,
+} from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import useAuth from "@/hooks/useAuth";
+import Swal from "sweetalert2";
 
 export default function EventsPage() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [bookingId, setBookingId] = useState(null); 
-  const { user, initializing } = useAuth();
+  const [bookingId, setBookingId] = useState(null);
+
+  const { data: session, status } = useSession();
   const router = useRouter();
+
 
   useEffect(() => {
     async function loadEvents() {
@@ -31,29 +39,57 @@ export default function EventsPage() {
   }, []);
 
   const handleBook = async (event) => {
-    if (!user && !initializing) {
-  
-      router.push("/login");
+
+    if (status === "loading") return;
+
+    if (!session) {
+      const result = await Swal.fire({
+        title: "Login required",
+        text: "Please login or register to book this package.",
+        icon: "info",
+        showCancelButton: true,
+        confirmButtonColor: "#f97316",
+        cancelButtonColor: "#6b7280",
+        confirmButtonText: "Go to Login",
+        cancelButtonText: "Cancel",
+      });
+
+      if (result.isConfirmed) {
+        router.push("/login");
+      }
       return;
     }
 
     try {
       setBookingId(event.id);
+
       await addDoc(collection(db, "bookings"), {
         productId: event.id,
         title: event.title,
         category: event.category || "",
         price: event.price || "",
+        currency: event.currency || "BDT",
         imageUrl: event.imageUrl || "",
-        userId: user.uid,
-        userEmail: user.email,
+        userEmail: session.user.email,
+        userName: session.user.name || "",
         status: "pending",
         createdAt: serverTimestamp(),
       });
-      alert("Booking created! You can see it in 'Our Bookings' page.");
+
+      await Swal.fire({
+        icon: "success",
+        title: "Booking created!",
+        text: "You can see it in the 'My Bookings' page.",
+        confirmButtonColor: "#22c55e",
+      });
     } catch (err) {
       console.error("Failed to create booking:", err);
-      alert("Booking failed. Please try again.");
+      await Swal.fire({
+        icon: "error",
+        title: "Booking failed",
+        text: "Something went wrong. Please try again.",
+        confirmButtonColor: "#f97316",
+      });
     } finally {
       setBookingId(null);
     }
@@ -78,11 +114,11 @@ export default function EventsPage() {
           </p>
 
           <div className="mt-4 text-xs text-[#9ca3af]">
-            {user ? (
+            {session ? (
               <span>
                 Signed in as{" "}
                 <span className="text-[#ffcf6a] font-medium">
-                  {user.email}
+                  {session.user.email}
                 </span>
                 . See your bookings under{" "}
                 <Link
@@ -115,13 +151,14 @@ export default function EventsPage() {
           </p>
         )}
 
-        {/* Events grid */}
+        {/* Empty state */}
         {!loading && events.length === 0 && (
           <p className="text-center text-sm text-[#9ca3af]">
             No events found. Please seed products or add new ones.
           </p>
         )}
 
+        {/* Events grid */}
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {events.map((ev) => (
             <div

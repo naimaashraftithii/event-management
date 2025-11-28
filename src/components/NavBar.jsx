@@ -11,27 +11,22 @@ export default function Navbar() {
   const { data: session } = useSession();
   const [open, setOpen] = useState(false);
 
-//theme icon
+  // Theme
   const [theme, setTheme] = useState(() => {
     if (typeof window === "undefined") return "dark";
     const saved = window.localStorage.getItem("theme");
     return saved === "light" || saved === "dark" ? saved : "dark";
   });
 
-
   useEffect(() => {
     if (typeof document === "undefined") return;
     const root = document.documentElement;
-    if (theme === "dark") root.classList.add("dark");
-    else root.classList.remove("dark");
+    theme === "dark" ? root.classList.add("dark") : root.classList.remove("dark");
 
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem("theme", theme);
-    }
+    window.localStorage.setItem("theme", theme);
   }, [theme]);
 
-  const toggleTheme = () =>
-    setTheme((t) => (t === "dark" ? "light" : "dark"));
+  const toggleTheme = () => setTheme(theme === "dark" ? "light" : "dark");
 
   const navItems = [
     { href: "/", label: "HOME" },
@@ -44,7 +39,8 @@ export default function Navbar() {
 
   return (
     <header className="fixed top-0 left-0 w-full z-50">
-      {/* TOP */}
+
+      {/* TOP BAR */}
       <div className="w-full text-xs text-white py-2 bg-gradient-to-r from-orange-600 to-yellow-400">
         <div className="container mx-auto px-6 flex justify-between">
           <div className="flex items-center gap-6">
@@ -66,14 +62,16 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* NAV */}
+      {/* NAVBAR MAIN */}
       <nav className="bg-white dark:bg-[#050816] border-b border-black/10 dark:border-white/10 shadow-md">
-        <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
-          {/* LOGO */}
-          <Link href="/" className="flex items-center gap-2">
-             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#ff6a00] via-[#ff9f1a] to-[#ffd34d] flex items-center justify-center">
-                          <Image src="/img/mic.png" width={24} height={24} alt="Harmoni" />
-                        </div>
+        <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between gap-4">
+
+          {/* LOGO — Prevent shrinking */}
+          <Link href="/" className="flex items-center gap-2 flex-shrink-0">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#ff6a00] via-[#ff9f1a] to-[#ffd34d] flex items-center justify-center">
+              <Image src="/img/mic.png" width={24} height={24} alt="Harmoni" />
+            </div>
+
             <div>
               <h1 className="text-lg font-bold text-orange-500 dark:text-white">
                 EV<span className="text-orange-500 font-extrabold italic">EN</span>
@@ -85,8 +83,8 @@ export default function Navbar() {
             </div>
           </Link>
 
-          {/* DESKTOP MENU */}
-          <ul className="hidden md:flex items-center gap-10 mx-auto">
+          {/* DESKTOP MENU — reduced gap for medium devices */}
+          <ul className="hidden md:flex items-center gap-6 mx-auto">
             {navItems.map((item) => (
               <li key={item.href}>
                 <Link
@@ -100,75 +98,77 @@ export default function Navbar() {
             ))}
           </ul>
 
-          {/* RIGHT */}
-          {session ? (
-            <div className="relative group hidden md:block">
-              <button className="flex items-center gap-2">
-                <Image
-                  src={session.user.image || "/img/mic.png"}
-                  width={32}
-                  height={32}
-                  className="rounded-full"
-                  alt="user"
-                />
-                <span className="text-sm text-gray-800 dark:text-gray-100">
-                  {session.user.name || session.user.email}
-                </span>
-              </button>
-
-              {/* DROPDOWN */}
-              <div className="absolute right-0 mt-2 w-52 bg-white dark:bg-[#111] shadow-md rounded-md overflow-hidden hidden group-hover:block">
-                <div className="px-4 py-2 border-b border-gray-200/50 dark:border-gray-700/50 text-xs text-gray-500 dark:text-gray-400">
-                  Signed in as
-                  <div className="font-medium text-gray-800 dark:text-gray-100">
-                    {session.user.email}
-                  </div>
-                </div>
-                <Link
-                  href="/products/add"
-                  className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
-                >
-                  Add Product
-                </Link>
-                <Link
-                  href="/products/manage"
-                  className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
-                >
-                  Manage Products
-                </Link>
-                <Link
-                  href="/booking"
-                  className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
-                >
-                  Our Bookings
-                </Link>
-                <button
-                  onClick={() => signOut({ callbackUrl: "/" })}
-                  className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
-                >
-                  <LogOut size={14} /> Logout
+          {/* RIGHT SECTION — Prevent shrinking */}
+          <div className="hidden md:flex items-center gap-3 flex-shrink-0">
+            {session ? (
+              <div className="relative group">
+                <button className="flex items-center gap-2">
+                  <Image
+                    src={session.user.image || "/img/mic.png"}
+                    width={32}
+                    height={32}
+                    className="rounded-full"
+                    alt="user"
+                  />
+                  <span className="text-sm text-gray-800 dark:text-gray-100">
+                    {session.user.name || session.user.email}
+                  </span>
                 </button>
-              </div>
-            </div>
-          ) : (
-            <div className="hidden md:flex gap-3">
-              <Link
-                href="/login"
-                className="px-4 py-1.5 rounded bg-orange-500 text-white text-sm hover:bg-orange-600"
-              >
-                Login
-              </Link>
-              <Link
-                href="/register"
-                className="px-4 py-1.5 rounded bg-gray-800 text-white text-sm hover:bg-gray-900"
-              >
-                Register
-              </Link>
-            </div>
-          )}
 
-          {/* MOBILE HAMBURGER */}
-          <button className="md:hidden" onClick={() => setOpen((o) => !o)}>
+                {/* DROPDOWN */}
+                <div className="absolute right-0 mt-2 w-52 bg-white dark:bg-[#111] shadow-md rounded-md overflow-hidden hidden group-hover:block">
+                  <div className="px-4 py-2 border-b border-gray-200/50 dark:border-gray-700/50 text-xs text-gray-500 dark:text-gray-400">
+                    Signed in as
+                    <div className="font-medium text-gray-800 dark:text-gray-100">
+                      {session.user.email}
+                    </div>
+                  </div>
+                  <Link
+                    href="/products/add"
+                    className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
+                  >
+                    Add Product
+                  </Link>
+                  <Link
+                    href="/products/manage"
+                    className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
+                  >
+                    Manage Products
+                  </Link>
+                  <Link
+                    href="/booking"
+                    className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
+                  >
+                    Our Bookings
+                  </Link>
+                  <button
+                    onClick={() => signOut({ callbackUrl: "/" })}
+                    className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
+                  >
+                    <LogOut size={14} /> Logout
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className="px-4 py-1.5 rounded bg-orange-500 text-white text-sm hover:bg-orange-600"
+                >
+                  Login
+                </Link>
+                <Link
+                  href="/register"
+                  className="px-4 py-1.5 rounded bg-gray-800 text-white text-sm hover:bg-gray-900"
+                >
+                  Register
+                </Link>
+              </>
+            )}
+          </div>
+
+          {/* MOBILE HAMBURGER BUTTON */}
+          <button className="md:hidden flex-shrink-0" onClick={() => setOpen(!open)}>
             {open ? <X size={28} /> : <Menu size={28} />}
           </button>
         </div>

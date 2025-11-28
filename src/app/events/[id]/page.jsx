@@ -229,7 +229,7 @@ export default function ProductDetailsPage() {
           </aside>
         </div>
 
-        {/* Back n */}
+        {/* Back  */}
         <div className="max-w-5xl mx-auto px-4 mt-10">
           <Link
             href="/products"

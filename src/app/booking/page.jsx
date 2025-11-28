@@ -36,7 +36,7 @@ export default function BookingPage() {
     }
   }, [session, status, router]);
 
-  // Load bookings for this user
+  // Load bookings 
   useEffect(() => {
     if (!session) return;
 
@@ -44,7 +44,6 @@ export default function BookingPage() {
       try {
         setErrorMsg("");
 
-        // only filter by userEmail – no composite index needed
         const qRef = query(
           collection(db, "bookings"),
           where("userEmail", "==", session.user.email)
@@ -53,7 +52,7 @@ export default function BookingPage() {
         const snap = await getDocs(qRef);
         let list = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
 
-        // sort by createdAt on client (newest first)
+
         list.sort((a, b) => {
           const aTs = a.createdAt?.seconds || 0;
           const bTs = b.createdAt?.seconds || 0;
@@ -73,7 +72,7 @@ export default function BookingPage() {
     load();
   }, [session]);
 
-  // 🗑 Delete booking (with SweetAlert2)
+
   const handleDelete = async (id) => {
     const result = await Swal.fire({
       title: "Delete this booking?",
@@ -109,7 +108,7 @@ export default function BookingPage() {
     }
   };
 
-  // ✅ Mark booking as confirmed (with SweetAlert2)
+
   const handleMarkConfirmed = async (id) => {
     const result = await Swal.fire({
       title: "Mark as confirmed?",
@@ -150,7 +149,7 @@ export default function BookingPage() {
     }
   };
 
-  // while checking session
+
   if (status === "loading" || (!session && status !== "loading")) {
     return <LoadingLottie message="Checking your session..." />;
   }
@@ -230,7 +229,7 @@ export default function BookingPage() {
                   </div>
                 </div>
 
-                {/* Action buttons */}
+                {/*  buttons */}
                 <div className="mt-3 flex gap-2 justify-end">
                   {b.status !== "confirmed" && (
                     <button
