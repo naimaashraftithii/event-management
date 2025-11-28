@@ -32,13 +32,14 @@ export default function Footer() {
           </div>
 
           {/* CTA BUTTON */}
-          <button
-            onClick={() => (window.location.href = "/contact")}
-            className="bg-white text-[#ff6a00] font-semibold px-10 py-4 rounded-full shadow-lg 
-                       hover:shadow-xl hover:bg-[#fff8e6] transition text-sm tracking-wide"
-          >
-            MAKE AN EVENT NOW
-          </button>
+          <Link
+  href="/products"
+  className="bg-white text-[#ff6a00] font-semibold px-10 py-4 rounded-full shadow-lg 
+             hover:shadow-xl hover:bg-[#fff8e6] transition text-sm tracking-wide inline-block"
+>
+  MAKE AN EVENT NOW
+</Link>
+
         </div>
       </div>
 
@@ -52,22 +53,31 @@ export default function Footer() {
 
         {/* LOGO */}
         <div>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#ff6a00] via-[#ff9f1a] to-[#ffd34d] flex items-center justify-center">
-              <Image src="/img/mic.png" width={24} height={24} alt="Harmoni" />
-            </div>
+  <div className="flex items-center gap-3">
 
-            <div>
-              <h1 className="text-xl font-bold text-orange-500">
-                EV<span className="text-orange-500 font-extrabold italic">EN</span>
-                T-H<span className="text-orange-500 font-extrabold italic">U</span>B
-              </h1>
-              <p className="text-xs text-[#ff9f1a] tracking-[0.3em]">
-                EVENT MANAGEMENT
-              </p>
-            </div>
-          </div>
-        </div>
+    {/* Icon */}
+    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#ff6a00] via-[#ff9f1a] to-[#ffd34d] flex items-center justify-center">
+      <Image src="/img/mic.png" width={24} height={24} alt="Harmoni" />
+    </div>
+
+    {/* Text Block */}
+    <div>
+      <h1 className="text-lg font-bold text-orange-500 dark:text-white">
+        EV
+        <span className="text-orange-500 font-extrabold italic">EN</span>
+        T-H
+        <span className="text-orange-500 font-extrabold italic">U</span>
+        B
+      </h1>
+
+      <p className="text-[10px] tracking-[.2em] text-orange-300 italic">
+        EVENT MANAGEMENT
+      </p>
+    </div>
+
+  </div>
+</div>
+
 
         {/* QUICK LINKS */}
         <div>
@@ -80,7 +90,7 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* EVENT  */}
+        {/* EVENT */}
         <div>
           <h3 className="text-lg font-semibold text-[#ff9f1a]">Event Types</h3>
           <ul className="mt-4 space-y-2 text-sm">

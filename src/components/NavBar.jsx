@@ -11,14 +11,14 @@ export default function Navbar() {
   const { data: session } = useSession();
   const [open, setOpen] = useState(false);
 
-  // initial theme (no setState inside effect)
+//theme icon
   const [theme, setTheme] = useState(() => {
     if (typeof window === "undefined") return "dark";
     const saved = window.localStorage.getItem("theme");
     return saved === "light" || saved === "dark" ? saved : "dark";
   });
 
-  // apply theme to <html> + localStorage
+
   useEffect(() => {
     if (typeof document === "undefined") return;
     const root = document.documentElement;

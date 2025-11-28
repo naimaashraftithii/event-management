@@ -1,40 +1,58 @@
+// src/app/products/page.jsx
 "use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import LoadingLottie from "@/components/LoadingLottie";
+import ErrorLottie from "@/components/ErrorLottie";
+
 import { db } from "@/lib/firebase";
-import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 
 export default function ProductsPage() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [errorMsg, setErrorMsg] = useState("");
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
 
   useEffect(() => {
-    const load = async () => {
+    async function load() {
       try {
-        const q = query(collection(db, "products"), orderBy("price", "asc"));
-        const snap = await getDocs(q);
-        const data = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-        setItems(data);
+        setErrorMsg("");
+        const snap = await getDocs(collection(db, "products"));
+        const list = snap.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setItems(list);
       } catch (err) {
         console.error("Failed to load products", err);
+        setErrorMsg("Failed to load packages");
       } finally {
         setLoading(false);
       }
-    };
+    }
 
     load();
   }, []);
 
-  const categories = ["all", ...new Set(items.map((p) => p.category))];
+  const categories = [
+    "all",
+    ...Array.from(
+      new Set(
+        items
+          .map((p) => p.category)
+          .filter((c) => c && typeof c === "string")
+      )
+    ),
+  ];
 
   const filtered = items.filter((item) => {
     const catMatch = category === "all" || item.category === category;
     const text = (
-      item.title +
-      item.shortDescription +
+      (item.title || "") +
+      (item.shortDescription || "") +
       (item.description || "")
     ).toLowerCase();
     const searchMatch = text.includes(search.toLowerCase());
@@ -42,7 +60,7 @@ export default function ProductsPage() {
   });
 
   return (
-    <section className="min-h-screen bg-[#050816] pt-28 pb-16">
+    <section className="min-h-screen bg-[#050816] pt-28 pb-16 text-white">
       <div className="max-w-6xl mx-auto px-4">
         {/* Header */}
         <header className="mb-8">
@@ -53,11 +71,12 @@ export default function ProductsPage() {
             Choose The Perfect Event Package
           </h1>
           <p className="mt-2 text-sm text-[#b3b3b3] max-w-2xl">
-            Wedding, birthday, corporate or family gathering – curated decoration packages for your event in one place.
+            Wedding, birthday, corporate or family gathering – curated
+            decoration packages for your event in one place.
           </p>
         </header>
 
-        {/* Search + Filters */}
+        {/* Search and Filters */}
         <div className="flex flex-col md:flex-row gap-3 md:gap-4 mb-8">
           <input
             type="text"
@@ -82,13 +101,28 @@ export default function ProductsPage() {
           </select>
         </div>
 
-        {/* Loading state */}
+        {/* Loading */}
         {loading && (
-          <p className="text-sm text-[#b3b3b3]">Loading packages...</p>
+          <div className="py-16">
+            <LoadingLottie
+              message="Loading packages..."
+              fullscreen={false}
+            />
+          </div>
+        )}
+
+        {/* Error */}
+        {!loading && errorMsg && (
+          <div className="py-10">
+            <ErrorLottie
+              message={errorMsg || "Something went wrong while loading packages."}
+              fullscreen={false}
+            />
+          </div>
         )}
 
         {/* Cards Grid */}
-        {!loading && (
+        {!loading && !errorMsg && (
           <>
             {filtered.length === 0 ? (
               <p className="text-sm text-[#b3b3b3]">
@@ -116,7 +150,7 @@ export default function ProductsPage() {
                           {item.title}
                         </h3>
                         <span className="rounded-full border border-white/10 bg-white/5 px-2 py-[2px] text-[10px] uppercase tracking-wide text-[#ffcf6a]">
-                          {item.priority}
+                          {item.priority || "normal"}
                         </span>
                       </div>
 
@@ -127,13 +161,17 @@ export default function ProductsPage() {
                       <div className="mt-2 flex items-center justify-between gap-3">
                         <div>
                           <p className="text-sm font-semibold text-[#ff9f1a]">
-                            {item.price?.toLocaleString()} {item.currency}
+                            {typeof item.price === "number"
+                              ? item.price.toLocaleString()
+                              : item.price}{" "}
+                            {item.currency || "BDT"}
                           </p>
                           <p className="text-[10px] uppercase text-[#9ca3af]">
-                            {item.category}
+                            {item.category || "general"}
                           </p>
                         </div>
 
+                        {/* Detail button  */}
                         <Link
                           href={`/products/${item.id}`}
                           className="rounded-full border border-[#ff9f1a] px-3 py-1 text-xs font-semibold text-[#ff9f1a] hover:bg-[#ff9f1a] hover:text-black transition"

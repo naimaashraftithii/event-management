@@ -1,23 +1,46 @@
-import express from "express";
-import dotenv from "dotenv";
-import cors from "cors";
-import { connectDB } from "./config/db.js";
-import productRoutes from "./routes/products.js";
-import bookingRoutes from "./routes/bookings.js";
 
-dotenv.config();
+require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
+const mongoose = require("mongoose");
+
+const productsRouter = require("./routes/products");
+const bookingsRouter = require("./routes/bookings"); 
 
 const app = express();
 
-// Connect database
-await connectDB();
-
-// Middleware
-app.use(cors());
+//MIDDLEWARE 
+app.use(
+  cors({
+    origin: ["http://localhost:3000"], 
+    credentials: true,
+  })
+);
 app.use(express.json());
 
-// Routes
-app.use("/api/products", productRoutes);
-app.use("/api/bookings", bookingRoutes);
 
-app.listen(5000, () => console.log("Server running on port 5000"));
+app.get("/", (req, res) => {
+  res.json({ status: "ok", message: "Event Manager API running" });
+});
+
+// ROUTES
+app.use("/api/products", productsRouter);
+app.use("/api/bookings", bookingsRouter); 
+
+
+const PORT = process.env.PORT || 5000;
+const MONGODB_URI =
+  process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/event_manager";
+
+mongoose
+  .connect(MONGODB_URI)
+  .then(() => {
+    console.log("✔ MongoDB connected");
+    app.listen(PORT, () => {
+      console.log(`🚀 API server running on http://localhost:${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("❌ MongoDB connection error:", err);
+    process.exit(1);
+  });

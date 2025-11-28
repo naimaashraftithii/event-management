@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    // যেসব external host থেকে ইমেজ আসবে
+
     remotePatterns: [
       {
         protocol: "https",

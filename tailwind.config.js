@@ -8,6 +8,6 @@ module.exports = {
     extend: {},
   },
   plugins: [
-    require("daisyui"), // only if you actually installed daisyui; otherwise remove this line
+    require("daisyui"),
   ],
 };

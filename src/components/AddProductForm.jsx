@@ -1,8 +1,10 @@
+// src/components/AddProductForm.jsx
 "use client";
 
 import { useState } from "react";
-import axios from "axios";
 import { toast, Toaster } from "react-hot-toast";
+import { db } from "@/lib/firebase";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 export default function AddProductForm() {
   const [loading, setLoading] = useState(false);
@@ -13,7 +15,8 @@ export default function AddProductForm() {
     price: "",
     date: "",
     priority: "medium",
-    imageUrl: ""
+    imageUrl: "",
+    category: "Wedding",
   });
 
   const handleChange = (e) =>
@@ -24,11 +27,17 @@ export default function AddProductForm() {
     setLoading(true);
 
     try {
-      // Simple Express backend endpoint উদাহরণ:
-      // POST http://localhost:5000/api/products
-      await axios.post("http://localhost:5000/api/products", {
-        ...form,
-        price: Number(form.price)
+      await addDoc(collection(db, "products"), {
+        title: form.title,
+        shortDescription: form.shortDescription,
+        description: form.description,
+        price: Number(form.price),
+        date: form.date || null,
+        priority: form.priority,
+        imageUrl: form.imageUrl || "",
+        category: form.category,
+        currency: "BDT",
+        createdAt: serverTimestamp(),
       });
 
       toast.success("Product added successfully!");
@@ -39,7 +48,8 @@ export default function AddProductForm() {
         price: "",
         date: "",
         priority: "medium",
-        imageUrl: ""
+        imageUrl: "",
+        category: "Wedding",
       });
     } catch (err) {
       console.error(err);

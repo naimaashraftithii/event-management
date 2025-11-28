@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ---------- THEME VARIABLES ---------- */
 :root {
   --page-bg: #ffffff;
   --page-text: #111827;

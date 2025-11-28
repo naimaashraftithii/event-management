@@ -248,7 +248,7 @@ export default function GalleryPage() {
           ))}
         </div>
 
-        {/* Grid with MORE cards */}
+        {/* Grid*/}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((item) => (
             <div
@@ -273,21 +273,6 @@ export default function GalleryPage() {
           ))}
         </div>
 
-        {/* simple pagination mimic (UI only) */}
-        {/* <div className="mt-8 flex justify-center gap-3 text-[11px] text-[#9ca3af]">
-          <button className="px-3 py-1 rounded-full border border-white/15 hover:border-[#ff9f1a] hover:text-[#ff9f1a] transition">
-            ‹ Prev
-          </button>
-          <span className="px-3 py-1 rounded-full bg-[#ff9f1a] text-black font-semibold">
-            01
-          </span>
-          <span className="px-3 py-1 rounded-full border border-white/15">
-            02
-          </span>
-          <span className="px-3 py-1 rounded-full border border-white/15">
-            Next ›
-          </span>
-        </div> */}
 
         {/* FEATURED SLIDER */}
         <div className="mt-12">

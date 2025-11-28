@@ -1,21 +1,40 @@
+// event-server/index.js
 import express from "express";
-import mongoose from "mongoose";
-import cors from "cors";
 import dotenv from "dotenv";
+import cors from "cors";
+import mongoose from "mongoose";
 
-import bookingsRouter from "./routes/bookings.js";
-import productsRouter from "./routes/products.js";
+import productsRouter from "../event-manager-api/routes/products";
+import bookingsRouter from "../event-manager-api/routes/bookings";
 
 dotenv.config();
 
 const app = express();
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+const PORT = process.env.PORT || 5000;
+const MONGO_URI = process.env.MONGO_URI;
+
+// CORS
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 
-app.use("/api/bookings", bookingsRouter);
+// routes
 app.use("/api/products", productsRouter);
+app.use("/api/bookings", bookingsRouter);
 
-mongoose.connect(process.env.MONGO_URI).then(() => {
-  console.log("MongoDB Connected");
-  app.listen(5000, () => console.log("Server running on 5000"));
-});
+mongoose
+  .connect(MONGO_URI)
+  .then(() => {
+    console.log("✅ MongoDB connected");
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running on port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("❌ MongoDB Error:", err);
+  });

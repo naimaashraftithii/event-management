@@ -83,7 +83,7 @@ export default function SpeakersSection() {
         </div>
       </div>
 
-      {/*BOTTOM  PART*/}
+      {/*BOTTOM*/}
       <div className="relative overflow-hidden">
         {/* background  */}
         <div
@@ -132,7 +132,7 @@ export default function SpeakersSection() {
               {active.description}
             </p>
 
-            {/* social links */}
+            {/* social */}
             <div className="mt-5 flex justify-center md:justify-start gap-3 text-xs text-[#6b7280]">
               <span className="uppercase tracking-[0.2em] text-[#9ca3af]">
                 Social
@@ -165,7 +165,7 @@ export default function SpeakersSection() {
               </div>
             </div>
 
-            {/* bottom small cards c */}
+            {/* bottom small cards  */}
             <div className="mt-8">
               <div className="flex items-center justify-center md:justify-start gap-3">
                 {/* prev arrow */}

@@ -14,7 +14,6 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  // already logged in → redirect home
   useEffect(() => {
     if (status === "authenticated") {
       router.replace("/");
@@ -50,11 +49,10 @@ export default function LoginPage() {
     setLoading(false);
   };
 
-  // status === "loading" থাকলে শুধু খালি স্ক্রিন না রেখে loader দেখাতে চাইলে পারো
   return (
     <section className="min-h-screen bg-[#050816] flex items-center justify-center px-4 py-16">
       <div className="max-w-4xl w-full grid gap-10 md:grid-cols-[1.2fr,1fr] items-center">
-        {/* LEFT: text */}
+        {/* LEFT */}
         <div className="space-y-4">
           <p className="text-xs tracking-[0.25em] uppercase text-[#ff9f1a]">
             Welcome to EventHub
@@ -87,7 +85,7 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* RIGHT: card */}
+        {/* RIGHT*/}
         <div className="bg-[#0b1020] border border-white/10 rounded-3xl shadow-xl shadow-black/40 px-6 py-7 md:px-8 md:py-9">
           <h2 className="text-lg font-semibold text-[#f9fafb]">
             Sign in to continue

@@ -16,7 +16,7 @@ export const authOptions = {
         password: {},
       },
       async authorize(credentials) {
-        // Simple credentials login (demo only)
+        // Simple credentials login 
         if (
           credentials.email === "demo@gmail.com" &&
           credentials.password === "123456"

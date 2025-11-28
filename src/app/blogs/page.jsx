@@ -81,7 +81,7 @@ export default function BlogsPage() {
 
       {/* MAIN CONTENT */}
       <section className="max-w-6xl mx-auto px-4 md:px-6 mt-10 grid gap-10 lg:grid-cols-[2fr,1fr]">
-        {/* LEFT: BLOG CARDS */}
+        {/* LEFT */}
         <div className="grid gap-6 md:grid-cols-2">
           {blogPosts.map((post) => (
             <article
@@ -114,9 +114,9 @@ export default function BlogsPage() {
           ))}
         </div>
 
-        {/* RIGHT: RECENT POST SIDEBAR */}
+        {/* RIGHT*/}
         <aside className="space-y-5">
-          {/* Highlight card */}
+     
           <div className="rounded-2xl bg-[#0b1020] border border-white/10 p-4">
             <h2 className="text-sm font-semibold text-[#f3f4f6] mb-2">
               Recent <span className="text-[#ff9f1a]">Post</span>
@@ -136,7 +136,7 @@ export default function BlogsPage() {
             </div>
           </div>
 
-          {/* FAQ / recent questions list */}
+          {/* FAQ  */}
           <div className="rounded-2xl bg-[#050816] border border-white/10 divide-y divide-white/5">
             {recentQuestions.map((q, idx) => (
               <button
@@ -151,7 +151,7 @@ export default function BlogsPage() {
             ))}
           </div>
 
-          {/* Small promo card */}
+          {/* Small */}
           <div
             className="rounded-2xl overflow-hidden h-52 bg-cover bg-center relative"
             style={{

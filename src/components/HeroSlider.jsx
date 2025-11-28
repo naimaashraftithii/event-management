@@ -47,7 +47,7 @@ export default function HeroSlider() {
   const goPrev = () =>
     setIndex((prev) => (prev - 1 + slides.length) % slides.length);
 
-  // auto-slide
+
   useEffect(() => {
     const id = setInterval(goNext, 8000);
     return () => clearInterval(id);
@@ -62,12 +62,12 @@ export default function HeroSlider() {
             i === index ? "opacity-100" : "opacity-0 pointer-events-none"
           }`}
         >
-          {/* Background */}
+
           <div
             className="absolute inset-0 bg-cover bg-center scale-105"
             style={{ backgroundImage: `url(${slide.image})` }}
           />
-          {/* Overlay */}
+     
           <div className="absolute inset-0 bg-black/60 bg-gradient-to-b from-black/70 via-black/40 to-black/70" />
 
           {/* Content */}
@@ -84,7 +84,7 @@ export default function HeroSlider() {
               {slide.subtitle}
             </p>
 
-            {/* CTA Buttons */}
+            {/* Buttons */}
             <div className="flex flex-col sm:flex-row gap-4">
               <Link
                 href={slide.primaryHref}
@@ -121,7 +121,7 @@ export default function HeroSlider() {
         <ChevronRight size={22} />
       </button>
 
-      {/* Indicators */}
+ 
       <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-6 text-white">
         {slides.map((slide, i) => (
           <button
